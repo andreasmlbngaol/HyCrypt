@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 kotlin {
@@ -15,7 +16,7 @@ kotlin {
         browser()
         binaries.executable()
     }
-    
+
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser()
@@ -24,14 +25,30 @@ kotlin {
     
     sourceSets {
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.compose.runtime)
+            implementation(libs.compose.foundation)
+            implementation(libs.compose.material3)
+            implementation(libs.compose.ui)
+//            implementation(libs.compose.ui.util)
+            implementation(libs.compose.components.resources)
+//            implementation(libs.compose.components.ui.tooling.preview)
+            implementation(libs.material.icons)
+
+            implementation(libs.lifecycle.viewmodel.compose)
+            implementation(libs.lifecycle.runtime.compose)
+
+            implementation(libs.kotlinx.serialization.json)
+
+            implementation(libs.navigation3.ui)
+//            implementation(libs.navigation3.runtime)
+            implementation(libs.navigation3.viewmodel)
+
+            implementation(project.dependencies.platform(libs.koin.bom))
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.koin.navigation3)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -47,10 +64,11 @@ kotlin {
 compose.desktop {
     application {
         mainClass = "com.ansan.hycrypt.MainKt"
+        jvmArgs += listOf("--enable-native-access=ALL-UNNAMED")
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.ansan.hycrypt"
+            packageName = "Hcrypt"
             packageVersion = "1.0.0"
         }
     }
